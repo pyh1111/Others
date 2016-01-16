@@ -17,6 +17,7 @@ import java.util.logging.Logger;
  */
 public class Evaluate {
 
+	//nisdhao
 	public static List<String> testData = new ArrayList<String>();
 	private static final Logger _logger = Logger.getLogger(TestCollaborativeFilteringRBM.class.getName());
 
