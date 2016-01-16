@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="jblas-1.2.31">
+    <CLASSES>
+      <root url="jar://D:/workspace/Jar/jblas-1.2.3.jar!/" />
+      <root url="jar://D:/workspace/Jar/com.google.common-guava-18.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
