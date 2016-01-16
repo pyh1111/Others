@@ -450,6 +450,9 @@ public class CollaborativeFilteringRBM {
     }
 
     public double predict(String userId, String itemId, PredictionType predictionType) {
+        if((!user2Index.containsKey(userId)) || (!feature2Index.containsKey(itemId))){
+            return 3.0;
+        }
 
         int userIndex = user2Index.get(userId);
         int itemIndex = feature2Index.get(itemId);

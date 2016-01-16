@@ -56,6 +56,9 @@ public class Evaluate {
 		int count = 0;
 		for(String test : testData){
 			String[] splits = test.split("\t");
+			if (splits.length < 3){
+				System.out.println(test);
+			}
 			double rat = Double.parseDouble(splits[2]);
 			double preRat = rbmCF.predict(splits[0], splits[1], PredictionType.MEAN);
 			System.out.println("Mean prediction = " +preRat);
