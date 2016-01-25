@@ -12,39 +12,39 @@ import java.util.Set;
  * @version 0.1
  * @filename ItemSimDegree.java
  * @note Calculate item similarity:
- * (1) getSimDegree(); ----æ±‚item1,item2çš„ç›¸ä¼¼æ€§
- * (2) getSimDegreeChanged(); ----æ ¡æ­£çš„ä½™å¼¦ç›¸ä¼¼åº¦è®¡ç®—
+ * (1) getSimDegree(); ----Çóitem1,item2µÄÏàËÆĞÔ
+ * (2) getSimDegreeChanged(); ----Ğ£ÕıµÄÓàÏÒÏàËÆ¶È¼ÆËã
  * @since 2015-05-20
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  */
 public class ItemSimDegree {
     /**
-     * æ±‚item1,item2çš„ç›¸ä¼¼æ€§
+     * Çóitem1,item2µÄÏàËÆĞÔ
      */
     public static double getSimDegree(ItemRateCollect collect, Integer itemId1, Integer itemId2) {
         if (itemId1.equals(itemId2)) {
             return 1.0;
         }
 
-        double item1AvgRate = collect.itemCollect.get(itemId1).avgRate; //å¯¹åº”item1çš„æ‰€æœ‰è¯„åˆ†çš„å‡å€¼
+        double item1AvgRate = collect.itemCollect.get(itemId1).avgRate; //¶ÔÓ¦item1µÄËùÓĞÆÀ·ÖµÄ¾ùÖµ
         double item2AvgRate = collect.itemCollect.get(itemId2).avgRate;
 
         if (collect.itemCollect.containsKey(itemId1) == false || collect.itemCollect.containsKey(itemId2) == false) {
             return 0.0;
         }
 
-        ItemRate item1Rate = collect.itemCollect.get(itemId1); //ç”±itemid1å¯¹åº”çš„è¯„åˆ†å€¼ç±»
+        ItemRate item1Rate = collect.itemCollect.get(itemId1); //ÓÉitemid1¶ÔÓ¦µÄÆÀ·ÖÖµÀà
         ItemRate item2Rate = collect.itemCollect.get(itemId2);
-        Set<Integer> userIdSet1 = item1Rate.itemUserRate.keySet(); //è¿”å›å¯¹item1æœ‰è¯„åˆ†çš„userid
+        Set<Integer> userIdSet1 = item1Rate.itemUserRate.keySet(); //·µ»Ø¶Ôitem1ÓĞÆÀ·ÖµÄuserid
         Set<Integer> userIdSet2 = item2Rate.itemUserRate.keySet();
         double fenzi = 0.0;
         double fenmu1 = 0.0;
         double fenmu2 = 0.0;
         int count = 0,count1 = 0,count2 = 0;
-        for (Integer userId1 : userIdSet1) { //å–æ‰€æœ‰å¯¹item1æœ‰è¿‡çš„è¯„åˆ†
-            double item1UserRate = item1Rate.itemUserRate.get(userId1); //æ¯ä¸ªuserå¯¹item1çš„è¯„åˆ†
+        for (Integer userId1 : userIdSet1) { //È¡ËùÓĞ¶Ôitem1ÓĞ¹ıµÄÆÀ·Ö
+            double item1UserRate = item1Rate.itemUserRate.get(userId1); //Ã¿¸öuser¶Ôitem1µÄÆÀ·Ö
             if (userIdSet2.contains(userId1)) {
-                double item2UserRate = item2Rate.itemUserRate.get(userId1); //æ¯ä¸€å¯¹item1æœ‰è¯„ä»·çš„userå¯¹Item2çš„è¯„åˆ†
+                double item2UserRate = item2Rate.itemUserRate.get(userId1); //Ã¿Ò»¶Ôitem1ÓĞÆÀ¼ÛµÄuser¶ÔItem2µÄÆÀ·Ö
                 count++;
                 fenzi += (item1UserRate - item1AvgRate) * (item2UserRate - item2AvgRate);
 
@@ -53,7 +53,7 @@ public class ItemSimDegree {
             fenmu1 += (item1UserRate - item1AvgRate) * (item1UserRate - item1AvgRate);
         }
 
-        for (Integer userId2 : userIdSet2) { //å–æ‰€æœ‰å¯¹item2æœ‰è¿‡çš„è¯„åˆ†
+        for (Integer userId2 : userIdSet2) { //È¡ËùÓĞ¶Ôitem2ÓĞ¹ıµÄÆÀ·Ö
             double item2UserRate = item2Rate.itemUserRate.get(userId2);
             count2++;
             fenmu2 += (item2UserRate - item2AvgRate) * (item2UserRate - item2AvgRate);
@@ -73,12 +73,12 @@ public class ItemSimDegree {
     }
 
     /**
-     * æ ¡æ­£çš„similarityè®¡ç®—
+     * Ğ£ÕıµÄsimilarity¼ÆËã
      */
     public static double getSimDegreeChanged(ItemRateCollect collect, Integer itemId1, Integer itemId2) {
         double item1AvgRate = collect.itemCollect.get(itemId1).avgRate;
         double item2AvgRate = collect.itemCollect.get(itemId2).avgRate;
-        double factorS = 1.0; //æ ¡æ­£å› å­ç³»æ•°S
+        double factorS = 1.0; //Ğ£ÕıÒò×ÓÏµÊıS
         int comUserCount = 0;
         int totalUserCount = 0;
 

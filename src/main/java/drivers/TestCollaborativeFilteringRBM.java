@@ -34,7 +34,7 @@ public class TestCollaborativeFilteringRBM {
         //CollaborativeFilteringLayer fit = CollaborativeFilteringRBM.fit(data, options);
         CollaborativeFilteringRBM rbmCF = new CollaborativeFilteringRBM();
 //        rbmCF.loadRatings("./data/" + "u.data");
-        rbmCF.loadRatings("D:/" + "u.data");
+//        rbmCF.loadRatings("D:/" + "u.data");
         rbmCF.fit(options);
         
         System.out.println("Max prediction = " + rbmCF.predict("166", "346", PredictionType.MAX));               

@@ -4,7 +4,6 @@
     <root id="archive" name="TestRecomSystem.jar">
       <element id="module-output" name="Others" />
       <element id="directory" name="META-INF">
-        <element id="file-copy" path="$PROJECT_DIR$/out/META-INF/MANIFEST.MF" />
         <element id="file-copy" path="$PROJECT_DIR$/out/artifacts/TestRecomSystem/META-INF/MANIFEST.MF" />
       </element>
     </root>

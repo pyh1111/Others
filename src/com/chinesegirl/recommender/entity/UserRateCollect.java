@@ -12,17 +12,17 @@ public class UserRateCollect {
     }
 
     /**
-     * å•ä¸ªuserå¯¹æ‰€æœ‰itemè¯„åˆ†çš„å¹³å‡å€¼
+     * µ¥¸öuser¶ÔËùÓĞitemÆÀ·ÖµÄÆ½¾ùÖµ
      */
     public void calcAvg() {
-        Set<Integer> userIdSet = this.userCollect.keySet(); //userCollectçš„æ‰€æœ‰keyå€¼(å³userId)
+        Set<Integer> userIdSet = this.userCollect.keySet(); //userCollectµÄËùÓĞkeyÖµ(¼´userId)
         for (Integer userId : userIdSet) {
-            UserRate userRate = this.userCollect.get(userId); //æ¯ä¸ªuserIdå¯¹åº”çš„è¯„åˆ†é›†åˆ
-            int itemCount = userRate.userItemRate.size(); //itemæ•°é‡
+            UserRate userRate = this.userCollect.get(userId); //Ã¿¸öuserId¶ÔÓ¦µÄÆÀ·Ö¼¯ºÏ
+            int itemCount = userRate.userItemRate.size(); //itemÊıÁ¿
             double avg = 0.0;
-            Set<Integer> itemIdSet = userRate.userItemRate.keySet(); //userItemRateçš„æ‰€æœ‰keyå€¼(å³itemId)
+            Set<Integer> itemIdSet = userRate.userItemRate.keySet(); //userItemRateµÄËùÓĞkeyÖµ(¼´itemId)
             for (Integer itemId : itemIdSet) {
-                double rate = userRate.userItemRate.get(itemId); //å¯¹æ¯ä¸ªitemçš„è¯„åˆ†(æ¯ä¸ªitemIdæ‰€å¯¹åº”çš„)
+                double rate = userRate.userItemRate.get(itemId); //¶ÔÃ¿¸öitemµÄÆÀ·Ö(Ã¿¸öitemIdËù¶ÔÓ¦µÄ)
                 avg += rate / itemCount;
             }
             userRate.avgRate = avg;
@@ -36,7 +36,7 @@ public class UserRateCollect {
         } else {
             UserRate userRate = new UserRate();
             userRate.recordRate(itemId, rate);
-            this.userCollect.put(userId, userRate); //åŠ å…¥userIdå¯¹åº”çš„userRate
+            this.userCollect.put(userId, userRate); //¼ÓÈëuserId¶ÔÓ¦µÄuserRate
         }
     }
 

@@ -28,11 +28,11 @@ public class TestRecMethod {
 
         long endTime = getCurrentTime();
         double duringTime = 1.0 * (endTime - beginTime) / 1000.0;
-        System.out.println("è®¡ç®—æ—¶é—´" + duringTime + "ç§’");
+        System.out.println("¼ÆËãÊ±¼ä" + duringTime + "Ãë");
     }
 
     /**
-     * è®¡ç®—å¹³å‡ç»å¯¹è¯¯å·®
+     * ¼ÆËãÆ½¾ù¾ø¶ÔÎó²î
      */
     public double getMae() {
         double mae = 0.0;
@@ -43,7 +43,7 @@ public class TestRecMethod {
     }
 
     /**
-     * è®¡ç®—å‡æ–¹æ ¹è¯¯å·®
+     * ¼ÆËã¾ù·½¸ùÎó²î
      */
     public double getRmse() {
         double rmse = 0.0;

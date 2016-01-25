@@ -17,29 +17,29 @@ import java.util.Set;
  * @author Shaq
  * @version 0.1
  * @filename ItemBaseCFChanged.java
- * @note é‡å†™predictionUserItemRateæ¥å£æ–¹æ³•, æ­¤ä¸ºItem-Basedé‡å†™
+ * @note ÖØĞ´predictionUserItemRate½Ó¿Ú·½·¨, ´ËÎªItem-BasedÖØĞ´
  * @since 2015-05-20
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  */
 public class ItemBaseCF implements RecomMethodInterface {
-    //æ³¨æ„è¿™é‡Œæ˜¯item-Based,æ˜¯topK item! è€Œä¸æ˜¯topKé‚»å±…ç”¨æˆ·(å±äºuser-Based)!
-    public int topKCount = 30; // ç”¨æˆ·æœ€å–œæ¬¢çš„topK item"å•†å“"æ•°é‡
+    //×¢ÒâÕâÀïÊÇitem-Based,ÊÇtopK item! ¶ø²»ÊÇtopKÁÚ¾ÓÓÃ»§(ÊôÓÚuser-Based)!
+    public int topKCount = 30; // ÓÃ»§×îÏ²»¶µÄtopK item"ÉÌÆ·"ÊıÁ¿
 
     public ItemBaseCF(int topKCount) {
         this.topKCount = topKCount;
     }
 
     /**
-     * é‡å†™predictionUserItemRateæ¥å£æ–¹æ³•
+     * ÖØĞ´predictionUserItemRate½Ó¿Ú·½·¨
      */
     @Override
     public double predictionUserItemRate(UserRateCollect trainUserData, ItemRateCollect collect, Integer userId, Integer itemId) {
-        ItemRate itemRate = collect.itemCollect.get(itemId); //è·å–å¯¹itemIdçš„è¯„åˆ†å€¼ç±»
-        if (itemRate == null) { //æ²¡æœ‰userå¯¹ç›®æ ‡itemåšè¿‡è¯„åˆ†,åˆ™å–ç›®æ ‡userå¯¹æ‰€åšè¿‡çš„è¯„åˆ†çš„å¹³å‡å€¼ä¸ºç›®æ ‡userå¯¹ç›®æ ‡itemçš„è¯„åˆ†
+        ItemRate itemRate = collect.itemCollect.get(itemId); //»ñÈ¡¶ÔitemIdµÄÆÀ·ÖÖµÀà
+        if (itemRate == null) { //Ã»ÓĞuser¶ÔÄ¿±êitem×ö¹ıÆÀ·Ö,ÔòÈ¡Ä¿±êuser¶ÔËù×ö¹ıµÄÆÀ·ÖµÄÆ½¾ùÖµÎªÄ¿±êuser¶ÔÄ¿±êitemµÄÆÀ·Ö
             if (trainUserData.userCollect.containsKey(userId))
                 return trainUserData.userCollect.get(userId).avgRate;
             else
-                return 3.0; //è‹¥ç›®æ ‡useræœªåšè¿‡ä»»ä½•è¯„åˆ†,åˆ™è¯„åˆ†3.0
+                return 3.0; //ÈôÄ¿±êuserÎ´×ö¹ıÈÎºÎÆÀ·Ö,ÔòÆÀ·Ö3.0
         }
         if (itemRate.itemUserRate.containsKey(userId)) {
             return itemRate.itemUserRate.get(userId);
@@ -64,15 +64,15 @@ public class ItemBaseCF implements RecomMethodInterface {
     }
 
     /**
-     * å¾—åˆ°ç›¸ä¼¼SimilarItemåˆ—è¡¨ --from TopKè¯„åˆ†ç”¨æˆ·
+     * µÃµ½ÏàËÆSimilarItemÁĞ±í --from TopKÆÀ·ÖÓÃ»§
      */
     public List<SimItem> getSimilarItemsFromTopKUser(ItemRateCollect collect, Integer itemId, Integer userId) {
-        List<SimItem> items = new ArrayList<SimItem>(); //å­˜æ”¾ç›¸ä¼¼itemçš„é›†åˆ
-        SimItem[] topKSimilarItem = new SimItem[topKCount]; //å­˜æ”¾kä¸ªç›¸ä¼¼itemçš„é›†åˆ
+        List<SimItem> items = new ArrayList<SimItem>(); //´æ·ÅÏàËÆitemµÄ¼¯ºÏ
+        SimItem[] topKSimilarItem = new SimItem[topKCount]; //´æ·Åk¸öÏàËÆitemµÄ¼¯ºÏ
         int neighbourCount = 0;
-        Set<Integer> itemSet = collect.itemCollect.keySet(); //è·å–æ‰€æœ‰itemId
+        Set<Integer> itemSet = collect.itemCollect.keySet(); //»ñÈ¡ËùÓĞitemId
         for (Integer eachItem : itemSet) {
-            //ç›®æ ‡itemä»¥å¤–çš„æ¯ä¸€ä¸ªitemçš„è¯„åˆ†éƒ½å­˜åœ¨
+            //Ä¿±êitemÒÔÍâµÄÃ¿Ò»¸öitemµÄÆÀ·Ö¶¼´æÔÚ
             if (eachItem.equals(itemId) == false && collect.itemCollect.get(eachItem).itemUserRate.containsKey(userId)) {
                 double itemSimDegree = ItemSimDegree.getSimDegree(collect, itemId, eachItem);
                 if (neighbourCount < topKCount) {

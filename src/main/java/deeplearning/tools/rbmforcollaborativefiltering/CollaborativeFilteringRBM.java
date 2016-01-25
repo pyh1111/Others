@@ -29,11 +29,11 @@ public class CollaborativeFilteringRBM {
     
    
     static final Logger _logger = Logger.getLogger(CollaborativeFilteringRBM.class.getName());
-    
+
     // constants related to the training procedure
-    final double epsilonw = 0.1;   // learning rate for weights
-    final double epsilonvb = 0.1;  // learning rate for biases for visible units
-    final double epsilonhb = 0.1;  // learning rate for biases for hidden units
+    static final double epsilonw = 0.1;   // learning rate for weights
+    static final double epsilonvb = 0.1;  // learning rate for biases for visible units
+    static final double epsilonhb = 0.1;  // learning rate for biases for hidden units
     //double weightcost = 0.0002;
     final double weightcost = 0.002;
     final double initialmomentum = 0.5;
@@ -41,18 +41,18 @@ public class CollaborativeFilteringRBM {
     final double modifier = 20.0;
     
     // rbm configuration details
-    int numhid; // number of units in the hidden layer
-    int numdims; // number of visible units
+    public static int numhid; // number of units in the hidden layer
+    public static int numdims; // number of visible units
     
     // biases & connection weights
-    HashMap<Integer, DoubleMatrix> Wijk; //<rating,movie * hidden>
-    DoubleMatrix hidbiases;
-    HashMap<Integer, DoubleMatrix> visbiases;
-    
-    DoubleMatrix matrix;    
-    HashMap<String, Integer> feature2Index;
-    HashMap<String, Integer> user2Index;    
-    HashMap<Integer, String> index2User;
+    public static HashMap<Integer, DoubleMatrix> Wijk; //<rating,movie * hidden>
+    public static DoubleMatrix hidbiases;
+    public static HashMap<Integer, DoubleMatrix> visbiases;
+
+    public static DoubleMatrix matrix;
+    public static HashMap<String, Integer> feature2Index;
+    public static HashMap<String, Integer> user2Index;
+    public static HashMap<Integer, String> index2User;
     
     /**
      * Fits a separate RBM for each user, with 'tied' weights and biases
@@ -86,14 +86,14 @@ public class CollaborativeFilteringRBM {
         
         
         HashMap<Integer, DoubleMatrix> Wijk_inc = new HashMap<Integer, DoubleMatrix>(5);        
-        for(int rating = 1; rating <=5; rating++) {    //È¨ÖØ³õÊ¼»¯
+        for(int rating = 1; rating <=5; rating++) {    //???????
             Wijk_inc.put(rating, DoubleMatrix.zeros(numdims, numhid));
         }
         
                 
         //1b. gradients for visual to hidden connection weights (1 per rating)
         HashMap<Integer, DoubleMatrix> posprods = new HashMap<Integer, DoubleMatrix>(5);        
-        for(int rating = 1; rating <=5; rating++) {//£¿£¿
+        for(int rating = 1; rating <=5; rating++) {//????
             
             posprods.put(rating, DoubleMatrix.zeros(numdims, numhid));
         }
@@ -106,6 +106,8 @@ public class CollaborativeFilteringRBM {
         
         //2. biases for the hidden units
         this.hidbiases = DoubleMatrix.zeros(1, numhid);
+
+
         DoubleMatrix hidbiasinc = DoubleMatrix.zeros(1, numhid);        
                         
         //3. biases for the visible units (1 per rating)         
@@ -120,24 +122,24 @@ public class CollaborativeFilteringRBM {
                 
         //train for 'maxepoch' epochs
         rbmOptions.maxepoch = 1;
-        System.out.println(rbmOptions.maxepoch);
-        for (int epoch = 1; epoch <= rbmOptions.maxepoch; epoch++) {//µü´ú´ÎÊý
-
+//        System.out.println(rbmOptions.maxepoch);
+        for (int epoch = 1; epoch <= rbmOptions.maxepoch; epoch++) {//è®­ç»ƒå‚æ•°
+//        System.out.println("numhid*****=" + numhid);
             _logger.info("Starting epoch " + (epoch + 1) + "\n");
             double errsum = 0;
             
             // randomize the visiting order and then treat
             // each training case separately..
             List<Integer> visitingSeq = Utils.getSequence(0, N - 1);
-            Collections.shuffle(visitingSeq);//´æµÄÊ²Ã´»¹²»ÖªµÀÄØ
+            Collections.shuffle(visitingSeq);//??????????????
             
-            for (int r = 0; r < N; r++) {//NÊÇÓÃ»§µÄ¸öÊý
+            for (int r = 0; r < N; r++) {//Næ˜¯ç”¨æˆ·  å¼€å§‹éåŽ†ç”¨æˆ·
                 System.out.println(r);
                 
                 // each 'row' is in the form [0 0 5 4 2 0 0 3 ... 0 0 1 2 5],
                 // If the value is > 0, it is the rating for that movie (column)
                 // otherwise the rating is missing
-                DoubleMatrix row = matrix.getRow(visitingSeq.get(r));//¸Ð¾õÊÇ»ñµÃÓÃ»§µÄÆÀ·Ö¾ØÕó
+                DoubleMatrix row = matrix.getRow(visitingSeq.get(r));//èŽ·å¾—è¯¥ç”¨æˆ·çš„è¯„åˆ†çŸ©é˜µ
                 
                 if(rbmOptions.debug)
                     _logger.info("Examining row.." + row.toString());
@@ -149,11 +151,11 @@ public class CollaborativeFilteringRBM {
                     _logger.info("Indicator..." + indicator.toString());
                 
                 
-                DoubleMatrix V = Utils.createRowMaskMatrix(row, 5);//VÊÇ¿É¼ûµ¥ÔªµÄ¶þÎ¬¾ØÕó
+                DoubleMatrix V = Utils.createRowMaskMatrix(row, 5);//V???????????????
                 
                 //positive phase
-                DoubleMatrix poshidprobs = DoubleMatrix.zeros(1, numhid);//Õâ¸öÓÃÀ´´æµÄÒþ²Øµ¥ÔªµÄ¸ÅÂÊ
-                
+                DoubleMatrix poshidprobs = DoubleMatrix.zeros(1, numhid);//?????????????????????
+
                 //add the biases
                 poshidprobs.addi(hidbiases);                
                 
@@ -163,7 +165,7 @@ public class CollaborativeFilteringRBM {
 
                 for (int rating = 1; rating <= 5; rating++) {
 
-                    // 'columnList' contains all the column indices£¨Ö¸Êý£© with
+                    // 'columnList' contains all the column indices??????? with
                     //rating equal to the current 'rating'
                     List<Integer> columnList = summarizeRatings.get(rating);
                     if (columnList == null) {
@@ -182,13 +184,13 @@ public class CollaborativeFilteringRBM {
 
                 
                 //take the logistic, to form probabilities for the hidden units
-                poshidprobs = Utils.logistic(poshidprobs);//Õâ¸öÊÇÇóÁËÒþ²Ø±äÁ¿µÄ¸ÅÂÊ  Õâ¸öÊÇµÚÒ»´Î¸ù¾Ý¿É¼û±äÁ¿ ÇóÁËÒþ²Ø±äÁ¿µÄ¸ÅÂÊ
+                poshidprobs = Utils.logistic(poshidprobs);//?????????????????????  ????????ï¿½ï¿½????????? ????????????????
                 
                 
-                // posprods = data' * poshidprobs   £¿£¿£¿
+                // posprods = data' * poshidprobs   ??????
                 for(int rating = 1; rating <=5; rating++) {  
                     DoubleMatrix posprod = posprods.get(rating);
-                    DoubleMatrix vRow = V.getRow(rating - 1); //ratingÊÂÊµÉÏÊÇ0-4
+                    DoubleMatrix vRow = V.getRow(rating - 1); //rating???????0-4
                     posprod.addi(vRow.transpose().mmul(poshidprobs));
                     posprods.put(rating, posprod);
                 }
@@ -198,7 +200,7 @@ public class CollaborativeFilteringRBM {
                     _logger.info("poshidprobs..." + poshidprobs.toString());
                 
                 //end of positive phase
-                DoubleMatrix poshidstates = poshidprobs.ge(DoubleMatrix.rand(1, numhid));//Òþ²Øµ¥ÔªµÄ×´Ì¬  Ä¿Ç°Ã»ÓÐÅªÇå³þÊÇµÚ¼¸´Î¸üÐÂ
+                DoubleMatrix poshidstates = poshidprobs.ge(DoubleMatrix.rand(1, numhid));//??????????  ??????????????ï¿½ï¿½???
                 if(rbmOptions.debug)
                     _logger.info("poshidstates..." + poshidstates.toString());                                                                
                 
@@ -211,9 +213,9 @@ public class CollaborativeFilteringRBM {
                 //start negative phase        
                 DoubleMatrix negdata = DoubleMatrix.zeros(5, numdims);
                 
-                for(int index = 0; index < indicator.getColumns(); index++ ) {//±éÀúmovie
+                for(int index = 0; index < indicator.getColumns(); index++ ) {//????movie
                     
-                    // do not reconstruct missing ratings  È±Ê§µÄÆÀ·Ö²»ÖØ½¨
+                    // do not reconstruct missing ratings  ????????????
                     if(indicator.get(0, index) == 0.0) { 
                         continue;
                     }
@@ -224,16 +226,16 @@ public class CollaborativeFilteringRBM {
                         int rating = rat + 1;
                         
                         //get the bias for the specfic visible unit/rating
-                        DoubleMatrix vbias = visbiases.get(rating);     //¿É¼ûµ¥ÔªÆ«ÒÆ       »ñµÃÁË¸Ã·ÖÊýµÄ¿É¼ûµ¥Ôª
+                        DoubleMatrix vbias = visbiases.get(rating);     //?????????       ?????ï¿½ï¿½??????????
                         double bias = vbias.get(0, index);
                         
-                        DoubleMatrix wij = Wijk.get(rating);//µÃµ½µÄÊÇmovie * hidden
+                        DoubleMatrix wij = Wijk.get(rating);//???????movie * hidden
                         
-                        double sum = bias;//¿ÉÊÇ¾Í¼ÓÁË¿É¼ûµ¥ÔªÆ«ÒÆ
-                        for(int hid = 0; hid < poshidstates.getColumns(); hid++) {//±éÀúhidden
+                        double sum = bias;//????????????????
+                        for(int hid = 0; hid < poshidstates.getColumns(); hid++) {//????hidden
                             
                             //if the hidden is turned on, use it
-                            if(poshidstates.get(0, hid) > 0.0) {//¿´¿´hiddenµÄ×´Ì¬  ÊÇ0»¹ÊÇ1
+                            if(poshidstates.get(0, hid) > 0.0) {//????hidden????  ??0????1
                              
                                 sum += wij.get(index, hid);
                             }
@@ -245,15 +247,15 @@ public class CollaborativeFilteringRBM {
                 
                 
                 // zero negata values for the zero ratings
-                negdata = Utils.softmax(negdata);//Õâ¸öÊÇ¸ù¾ÝÒþ²Øµ¥ÔªÇó¿É¼ûµ¥ÔªµÄ   Õâ¸öÊÇµÚÒ»´Î¼ÆËãµÃµ½µÄ¿É¼ûµ¥ÔªµÄ¸ÅÂÊ
+                negdata = Utils.softmax(negdata);//???????????????????????   ????????ï¿½ï¿½?????????????????
                 
                 
-                DoubleMatrix neghidprobs = DoubleMatrix.zeros(1, numhid);//¶¨ÒåÁËÒ»¸ö¿É¼ûµ¥ÔªµÄ¸ÅÂÊ£¬¿Ï¶¨ÊÇÓÃÀ´·ÅµÚ¶þ´Î¼ÆËãµÄ¿É¼ûµ¥Ôª
+                DoubleMatrix neghidprobs = DoubleMatrix.zeros(1, numhid);//???????????????????????????????????ï¿½ï¿½?????????
                 
                 // add the biases for the hidden units
-                neghidprobs.addi(hidbiases);//ÔÚÕâÀï¼ÓÁËÒþ²Øµ¥ÔªÆ«ÒÆ
+                neghidprobs.addi(hidbiases);//??????????????????
                 
-                for(int index = 0; index < negdata.getColumns(); index++ ) { //¾ÍÊÇÕâÀïÓÖÔÚ±éÀúµçÓ°£¨negdata ÀïÃæ·ÅµÄÊÇrating * movie £©
+                for(int index = 0; index < negdata.getColumns(); index++ ) { //????????????????????negdata ????????rating * movie ??
                     
                     // if the rating is missing ignore it
                     if(negdata.getColumn(index).columnSums().get(0,0) == 0.0) {
@@ -264,10 +266,10 @@ public class CollaborativeFilteringRBM {
                     
                         int rating = k + 1;
                         DoubleMatrix wij = Wijk.get(rating);//movie * hidden
-                        double visible_prob = negdata.get(k, index);//ÓÃÀ´·Å¿É¼ûµ¥ÔªµÄ¸ÅÂÊ kÊÇÆÀ·Ö   indexÊÇmovie
+                        double visible_prob = negdata.get(k, index);//???????????????? k??????   index??movie
                         if(rbmOptions.debug)
                             _logger.info("visible prob = " + visible_prob);
-                        DoubleMatrix wToHidden = wij.getRow(index);//¾ßÌåµ½  ¸ÃÆÀ·Ö ¶ÔÓ¦µÄindex  µÄhidden
+                        DoubleMatrix wToHidden = wij.getRow(index);//???ï¿½ï¿½  ?????? ?????index  ??hidden
                         if(rbmOptions.debug)
                             _logger.info("wToHidden is \n " + wToHidden.toString());
                         DoubleMatrix contributionToHiddenUnits = wToHidden.mul(visible_prob);   
@@ -278,7 +280,7 @@ public class CollaborativeFilteringRBM {
                      }
                 }
                               
-                neghidprobs = Utils.logistic(neghidprobs);//¸ù¾Ý¿É¼ûµ¥Ôª   Òþ²Øµ¥ÔªµÄ¸ÅÂÊ¼ÆËã½áÊø
+                neghidprobs = Utils.logistic(neghidprobs);//?????????   ?????????????????
                 if(rbmOptions.debug) {
                     _logger.info("neghidprobs.. " + neghidprobs.toString());
                 }
@@ -361,24 +363,25 @@ public class CollaborativeFilteringRBM {
             }
             
             _logger.info("Epoch " + epoch + " error " + errsum + "\n");
-            
-        } // end of epoch
-                          
-    }
-                       
-    
+
+//            System.out.println("numhid*****=" + numhid);
+    } // end of epoch
+
+}
+
+
     /**
-     * Reads the file with the user-item ratings. The expected format is 
+     * Reads the file with the user-item ratings. The expected format is
      * 'user'<tab/>'item'<tab/>'rating
-     * @param file 
+     * @param file
      */
     public void loadRatings(String file) {
-               
-        HashMap<String, List<Rating>> ratingsMap = new HashMap<>(10000);//<user,<item,rating>µÄ¼¯ºÏ>
+
+        HashMap<String, List<Rating>> ratingsMap = new HashMap<String, List<Rating>>();//<user,<item,rating>?????>
        
         try {
             BigFile f = new BigFile(file);
-            HashSet<String> items = new HashSet<String>(5000);   
+            HashSet<String> items = new HashSet<String>();
             
             Iterator<String> iterator = f.iterator();            
             while (iterator.hasNext()) {
@@ -396,14 +399,31 @@ public class CollaborativeFilteringRBM {
                 
                 ratingsList.add(new Rating(itemId, rating));
                 ratingsMap.put(userId, ratingsList);
-                items.add(itemId);
-            }//ÎÄ¼þ¶ÁÍê£¬·Ö¸î ²¢ÇÒ´¦ÀíºÃÁË
+//                items.add(itemId);
+            }//?????????? ??????????
+
+//            System.out.println("Found " + ratingsMap.keySet().size() + " users " +
+//                    " and " + items.size() + " items..");
+            Iterator<Map.Entry<String, List<Rating>>> iter = ratingsMap.entrySet().iterator();
+            while (iter.hasNext()) {
+                Map.Entry<String, List<Rating>> entry = iter.next();
+                if(entry.getValue().size()<0){
+                   iter.remove();
+               }else{
+                    for(Rating rat : entry.getValue()){
+                        items.add(rat.itemId);
+                    }
+
+                }
+
+            }
 
             System.out.println("Found " + ratingsMap.keySet().size() + " users " +
                     " and " + items.size() + " items..");
             
             // initialize all with zeros
-            this.matrix = DoubleMatrix.zeros(ratingsMap.keySet().size(), items.size());//Õâ¸öÊÇuserSize * movieSize
+//            System.out.println(ratingsMap.keySet().size()+"\t"+items.size());
+            this.matrix = DoubleMatrix.zeros(ratingsMap.keySet().size(), items.size());//?????userSize * movieSize
             
             user2Index = new HashMap<>(ratingsMap.keySet().size());
             index2User = new HashMap<>(ratingsMap.keySet().size());
@@ -416,17 +436,16 @@ public class CollaborativeFilteringRBM {
                 user2Index.put(userId, rowIndex);
                 index2User.put(rowIndex, userId);
                 rowIndex++;
-            }//½¨Á¢ÁË¸öÓÃ»§µÄË÷Òý£¬»¹Õý·´·½Ïò¶¼½¨ÁË
+            }//???????????????????????????????
             int usersNr = rowIndex;
             
             
             int columnIndex = 0;
             feature2Index = new HashMap<>(items.size());
             for(String item : items) {
-                
                 feature2Index.put(item, columnIndex);
                 columnIndex++;
-            }//ÓÖ¸øµçÓ°Ò²½¨ÁË¸öË÷Òý
+            }//????????????????
                         
             for(int row = 0; row < usersNr; row++) {
                 
@@ -439,7 +458,7 @@ public class CollaborativeFilteringRBM {
                     
                     matrix.put(row, feature2Index.get(item), val);                    
                 }                
-            }//ÓÃ½¨Á¢ºÃµÄË÷Òý¸ømatrix ÌîÊý¾Ý
+            }//??????????????matrix ??????
                   
                          
         } catch (Exception ex) {
@@ -450,24 +469,32 @@ public class CollaborativeFilteringRBM {
     }
 
     public double predict(String userId, String itemId, PredictionType predictionType) {
+//        System.out.println("numhid###=" + numhid);
         if((!user2Index.containsKey(userId)) || (!feature2Index.containsKey(itemId))){
             return 3.0;
         }
-
+//        System.out.println(userId+"###"+itemId);
         int userIndex = user2Index.get(userId);
+//        System.out.println(userIndex);
+//        for(Map.Entry<String,Integer> entry : feature2Index.entrySet()){
+//            System.out.println(entry.getKey()+"###"+entry.getValue());
+//        }
+//        System.out.println("Flag1");
         int itemIndex = feature2Index.get(itemId);
-
-        DoubleMatrix user_ratings_so_far = this.matrix.getRow(userIndex);//»ñµÃÁËÄ¿±êÓÃ»§µÄÆÀ·Ö¾ØÕó
-                
+//        System.out.println("Flag2");
+        DoubleMatrix user_ratings_so_far = this.matrix.getRow(userIndex);//????????????????????
+//        System.out.println("Flag3");
         //positive phase
-        DoubleMatrix poshidprobs = DoubleMatrix.zeros(1, numhid);//À´ÁËÒ»¸öÒþ²Øµ¥ÔªµÄ³õÊ¼»¯
-
+//        System.out.println("numhid =" +numhid);
+        DoubleMatrix poshidprobs = DoubleMatrix.zeros(1, numhid);//???????????????????
+//        System.out.println(poshidprobs.getColumns() + "$$"+poshidprobs.getRows());
+//        System.out.println(hidbiases.getColumns() + "$$"+hidbiases.getRows());
         //add the biases
         poshidprobs.addi(hidbiases);
                    
         // the key is the 'rating' and and the value is the list of 
         // indices that contain that rating
-        HashMap<Integer, List<Integer>> summarize = Utils.summarizeRatings(user_ratings_so_far);//<rating,movie µÄË÷Òý¼¯ºÏ>
+        HashMap<Integer, List<Integer>> summarize = Utils.summarizeRatings(user_ratings_so_far);//<rating,movie ??????????>
 
         for (int rating = 1; rating <= 5; rating++) {
 
@@ -551,6 +578,19 @@ public class CollaborativeFilteringRBM {
         
         return 0.0;
     }
-                
+
+    public  void runRBM() throws IOException{
+        _logger.info("Loading data..");
+
+        RbmOptions options = new RbmOptions();
+        options.maxepoch = 10;
+        options.avglast = 5;
+        options.numhid = 100;
+        options.debug = false;
+
+        CollaborativeFilteringRBM rbmCF = new CollaborativeFilteringRBM();
+        rbmCF.loadRatings("D:/DianPingData/DataSet/BaseLine1/" + "trainSet.txt");
+        rbmCF.fit(options);
+    }
                    
 }

@@ -4,24 +4,24 @@ import java.util.HashMap;
 import java.util.Set;
 
 public class ItemRateCollect {
-    public HashMap<Integer, ItemRate> itemCollect; //key:itemId;   value:æ¯ä¸ªitemçš„æ‰€æœ‰ç”¨æˆ·è¯„åˆ†é›†åˆ
+    public HashMap<Integer, ItemRate> itemCollect; //key:itemId;   value:Ã¿¸öitemµÄËùÓĞÓÃ»§ÆÀ·Ö¼¯ºÏ
 
     public ItemRateCollect() {
         this.itemCollect = new HashMap<Integer, ItemRate>();
     }
 
     /**
-     * ä¼—å¤šuserå¯¹ä¸€ä¸ªitemè¯„åˆ†çš„å¹³å‡å€¼
+     * ÖÚ¶àuser¶ÔÒ»¸öitemÆÀ·ÖµÄÆ½¾ùÖµ
      */
     public void calcAvg() {
-        Set<Integer> itemIdSet = this.itemCollect.keySet(); //itemCollectçš„æ‰€æœ‰keyå€¼(å³itemId)
+        Set<Integer> itemIdSet = this.itemCollect.keySet(); //itemCollectµÄËùÓĞkeyÖµ(¼´itemId)
         for (Integer itemId : itemIdSet) {
-            ItemRate itemRate = this.itemCollect.get(itemId); //è·å–itemIdå¯¹åº”çš„è¯„åˆ†å€¼ç±»
-            Set<Integer> userIdSet = itemRate.itemUserRate.keySet(); //è¿”å›userIdé›†åˆ
+            ItemRate itemRate = this.itemCollect.get(itemId); //»ñÈ¡itemId¶ÔÓ¦µÄÆÀ·ÖÖµÀà
+            Set<Integer> userIdSet = itemRate.itemUserRate.keySet(); //·µ»ØuserId¼¯ºÏ
             int userIdCount = userIdSet.size();
             double avg = 0.0;
             for (Integer userId : userIdSet) {
-                double rate = itemRate.itemUserRate.get(userId); //è·å–userIdå¯¹åº”çš„è¯„åˆ†å€¼
+                double rate = itemRate.itemUserRate.get(userId); //»ñÈ¡userId¶ÔÓ¦µÄÆÀ·ÖÖµ
                 avg += rate / userIdCount;
             }
             itemRate.avgRate = avg;
@@ -40,7 +40,7 @@ public class ItemRateCollect {
     }
 
     public class ItemRate {
-        public HashMap<Integer, Double> itemUserRate; //key: userId;   value:æ¯ä¸ªuserå¯¹æŸä¸ªitemçš„è¯„åˆ†
+        public HashMap<Integer, Double> itemUserRate; //key: userId;   value:Ã¿¸öuser¶ÔÄ³¸öitemµÄÆÀ·Ö
         public Double avgRate;
 
         public ItemRate() {
@@ -50,9 +50,9 @@ public class ItemRateCollect {
 
         public void recordRate(Integer userId, Double rate) {
             if (this.itemUserRate.containsKey(userId)) {
-                this.itemUserRate.remove(userId); //åˆ é™¤é‡å¤userIdæ˜ å°„çš„å€¼
+                this.itemUserRate.remove(userId); //É¾³ıÖØ¸´userIdÓ³ÉäµÄÖµ
             }
-            this.itemUserRate.put(userId, rate); //ç”¨userIdæ˜ å°„rateå€¼
+            this.itemUserRate.put(userId, rate); //ÓÃuserIdÓ³ÉärateÖµ
         }
 
     }
